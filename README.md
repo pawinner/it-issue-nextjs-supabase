@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# IT Issue Tracker — Next.js Day 4 Starter
 
-## Getting Started
+โปรเจคเริ่มต้นสำหรับเรียน Next.js วันที่ 4 (ระบบแจ้งปัญหา IT)
 
-First, run the development server:
+## เริ่มต้นใช้งาน
+
+### วิธีที่ 1: ใช้ Template (แนะนำ)
+
+1. กดปุ่ม **Use this template** → **Create a new repository** ที่มุมขวาบนของหน้านี้
+2. ตั้งชื่อ repo ของตัวเอง แล้วกด **Create repository**
+3. Clone repo ของตัวเองลงเครื่อง
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/<username>/<repo-name>.git
+cd <repo-name>
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### วิธีที่ 2: Clone ตรง
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+git clone https://github.com/ohmiler/it-issue-nextjs-day-4-starter.git
+cd it-issue-nextjs-day-4-starter
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### ติดตั้งและรัน
 
-## Learn More
+```bash
+npm install
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+เปิด [http://localhost:3000](http://localhost:3000) ในเบราว์เซอร์
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## สิ่งที่ต้องมี
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Node.js 20.9 ขึ้นไป (`node -v` เพื่อเช็ค)
+- Git
+- VS Code (แนะนำ)
 
-## Deploy on Vercel
+## โครงสร้างโปรเจค
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+app/
+  page.tsx              หน้าแรก
+  issues/page.tsx       รายการ issue
+  issues/new/page.tsx   ฟอร์มแจ้งปัญหาใหม่
+  issues/[id]/page.tsx  รายละเอียด issue
+  not-found.tsx         หน้า 404
+components/             คอมโพเนนต์ (IssueBoard, IssueList, IssueForm, StatusBadge)
+data/issue.ts           ข้อมูลตัวอย่าง
+types/issue.ts          TypeScript types
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## คำสั่งที่ใช้บ่อย
+
+| คำสั่ง | ความหมาย |
+| --- | --- |
+| `npm run dev` | รัน dev server |
+| `npm run build` | build สำหรับ production |
+| `npm run start` | รัน production server (หลัง build) |
+| `npm run lint` | ตรวจโค้ดด้วย ESLint |
+
+## Tech Stack
+
+Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS v4
