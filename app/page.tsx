@@ -1,5 +1,4 @@
-import { IssueBoard } from "@/components/IssueBoard";
-import { issues } from "@/data/issue"
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -11,7 +10,17 @@ export default function Home() {
         </div>
       </header>
 
-      <IssueBoard initialIssues={issues} />
+      <main className="mx-auto max-w-5xl px-6 py-12">
+  <h2 className="text-2xl font-semibold">จัดการปัญหาการใช้งานระบบ</h2>
+  <p className="mt-2 text-slate-600">ดูรายการปัญหาที่แจ้งเข้ามาและติดตามสถานะ</p>
+  <Link
+    href="/issues"
+    className="mt-6 inline-block rounded-md bg-teal-700 px-4 py-2
+      font-semibold text-white hover:bg-teal-800"
+  >
+    ดูรายการปัญหา
+  </Link>
+</main>
 
       <footer className="px-6 py-8 text-center text-sm text-slate-500">
         <p>ฝ่ายเทคโนโลยีสารสนเทศ</p>
