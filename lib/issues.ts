@@ -1,5 +1,5 @@
-import type { Issue, IssueStatus } from "@/types/issue";
 import { createSupabaseServerClient } from "./supabase/server";
+import type { Issue, IssueStatus, NewIssueInput } from "@/types/issue";
 
 type DbIssue = {
   id: string;
@@ -45,4 +45,32 @@ export async function getIssueById(id: string): Promise<Issue | null> {
   if (error?.code === "22P02") return null;
   if (error) throw new Error(`Failed to fetch issue: ${error.message}`);
   return data ? mapIssue(data as DbIssue) : null;
+}
+
+export async function createIssue(
+  input: NewIssueInput,
+): Promise<void> {
+  const supabase = createSupabaseServerClient();
+
+  const { error } = await supabase.from("issues").insert({
+  reporter_name: input.reporterName,
+  reporter_email: input.reporterEmail,
+  title: input.title,
+  description: input.description,
+  status: "OPEN",
+});
+
+if (error) {
+  throw new Error(`Failed to create issue: ${error.message}`);
+}
+}
+
+export async function updateIssueStatus(id: string, status: IssueStatus): Promise<void> {
+  const supabase = createSupabaseServerClient();
+  const { error } = await supabase
+    .from("issues")
+    .update({ status, updated_at: new Date().toISOString() })
+    .eq("id", id);
+
+  if (error) throw new Error(`Failed to update issue: ${error.message}`);
 }

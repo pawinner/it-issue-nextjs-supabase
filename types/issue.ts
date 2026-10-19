@@ -10,3 +10,10 @@ export type Issue = {
   adminComment?: string;
   createdAt: string;
 }
+
+export type NewIssueInput = {
+  reporterName: string;
+  reporterEmail: string;
+  title: string;
+  description: string;
+};

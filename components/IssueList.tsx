@@ -1,17 +1,15 @@
-"use client"
-
 import { StatusBadge } from "./StatusBadge";
 import type { Issue, IssueStatus } from "@/types/issue";
 import Link from "next/link";
+import { updateIssueStatusAction } from "@/app/actions";
 
 type IssueListProps = {
     issues: Issue[];
-    onUpdateStatus?: (id: string, status: IssueStatus) => void;
 }
 
 const statuses: IssueStatus[] = ["OPEN", "IN_PROGRESS", "DONE"];
 
-export function IssueList({ issues, onUpdateStatus }: IssueListProps) {
+export function IssueList({ issues }: IssueListProps) {
 
     if (issues.length === 0) {
         return (
@@ -40,9 +38,7 @@ export function IssueList({ issues, onUpdateStatus }: IssueListProps) {
                             <th className="px-3 py-3 font-semibold">ผู้แจ้ง</th>
                             <th className="px-3 py-3 font-semibold">สถานะ</th>
                             <th className="px-3 py-3 font-semibold">รายละเอียด</th>
-                            {onUpdateStatus && (
-                                <th className="px-3 py-3 font-semibold">จัดการ</th>
-                            )}
+                            <th className="px-3 py-3 font-semibold">จัดการ</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -53,23 +49,25 @@ export function IssueList({ issues, onUpdateStatus }: IssueListProps) {
                                 <td className="px-3 py-4 text-slate-600">{issue.reporterName}</td>
                                 <td className="px-3 py-4"><StatusBadge status={issue.status} /></td>
                                 <td className="px-3 py-4"><Link href={`/issues/${issue.id}`} className="font-semibold text-teal-700 hover:text-teal-900">ดูรายละเอียด</Link></td>
-                                {onUpdateStatus && (
-                                    <td className="px-3 py-4">
-                                        <div className="flex flex-wrap gap-2">
-                                            {statuses.map((status) => (
+                                <td className="px-3 py-4">
+                                    <div className="flex flex-wrap gap-2">
+                                        {statuses.map((status) => (
+                                            <form key={status} action={updateIssueStatusAction}>
+                                                <input type="hidden" name="id" value={issue.id} />
+                                                <input type="hidden" name="status" value={status} />
                                                 <button
-                                                    key={status} type="button" disabled={issue.status === status}
-                                                    onClick={() => onUpdateStatus(issue.id, status)}
+                                                    type="submit"
+                                                    disabled={issue.status === status}
                                                     className="rounded-md border border-slate-300 px-2 py-1 text-xs font-semibold text-slate-700
       hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-teal-700
       disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400"
                                                 >
                                                     {status}
                                                 </button>
-                                            ))}
-                                        </div>
-                                    </td>
-                                )}
+                                            </form>
+                                        ))}
+                                    </div>
+                                </td>
                             </tr>
                         ))}
                     </tbody>
