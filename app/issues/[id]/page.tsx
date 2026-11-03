@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getIssueById } from "@/lib/issues";
 import { StatusBadge } from "@/components/StatusBadge";
+import { requireUser } from "@/lib/auth";   
 
 type IssueDetailPageProps = {
     params: Promise<{ id: string }>;
@@ -9,6 +10,7 @@ type IssueDetailPageProps = {
 export default async function IssueDetailPage({
     params
 }: IssueDetailPageProps) {
+    await requireUser();
     const { id } = await params;
 
     const issue = await getIssueById(id);

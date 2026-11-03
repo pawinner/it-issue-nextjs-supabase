@@ -4,6 +4,8 @@ import { createIssue, updateIssueStatus } from "@/lib/issues";
 import type { IssueStatus, NewIssueInput } from "@/types/issue";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { requireAdmin, requireUser } from "@/lib/auth";
+import { createClient } from "@/lib/supabase/server";
 
 const allowedStatuses: IssueStatus[] = ["OPEN", "IN_PROGRESS", "DONE"];
 
@@ -26,11 +28,12 @@ function validateIssueInput(input: NewIssueInput): string[] {
 }
 
 export async function createIssueAction(formData: FormData) {
+  const user = await requireUser();
   const input = parseIssueInput(formData);
   const errors = validateIssueInput(input);
   if (errors.length > 0) throw new Error(errors.join(", "));
 
-  await createIssue(input);
+  await createIssue(input, user.id);
   revalidatePath("/issues");
   redirect("/issues");
 }
@@ -38,6 +41,7 @@ export async function createIssueAction(formData: FormData) {
 export async function updateIssueStatusAction(
   formData: FormData,
 ): Promise<void> {
+  await requireAdmin();
   const id = String(formData.get("id") ?? "").trim();
   const status = String(formData.get("status") ?? "").trim();
 
@@ -47,4 +51,22 @@ export async function updateIssueStatusAction(
 
   await updateIssueStatus(id, status as IssueStatus);
   revalidatePath("/issues");
+  revalidatePath("/admin/issues");
+}
+
+export async function signInAction(formData: FormData) {
+  const email = String(formData.get("email") ?? "").trim();
+  const password = String(formData.get("password") ?? "");
+  const supabase = await createClient();
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) redirect("/login?error=1");
+  revalidatePath("/", "layout");
+  redirect("/issues");
+}
+
+export async function signOutAction() {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+  revalidatePath("/", "layout");
+  redirect("/login");
 }

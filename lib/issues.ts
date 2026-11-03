@@ -1,4 +1,4 @@
-import { createSupabaseServerClient } from "./supabase/server";
+import { createClient } from "@/lib/supabase/server";
 import type { Issue, IssueStatus, NewIssueInput } from "@/types/issue";
 
 type DbIssue = {
@@ -24,7 +24,7 @@ function mapIssue(row: DbIssue): Issue {
 }
 
 export async function getIssues(): Promise<Issue[]> {
-  const supabase = createSupabaseServerClient();
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from("issues")
     .select("*")
@@ -36,7 +36,7 @@ export async function getIssues(): Promise<Issue[]> {
 }
 
 export async function getIssueById(id: string): Promise<Issue | null> {
-  const supabase = createSupabaseServerClient();
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from("issues")
     .select("*")
@@ -49,24 +49,26 @@ export async function getIssueById(id: string): Promise<Issue | null> {
 
 export async function createIssue(
   input: NewIssueInput,
+  userId: string,
 ): Promise<void> {
-  const supabase = createSupabaseServerClient();
+  const supabase = await createClient();
 
   const { error } = await supabase.from("issues").insert({
-  reporter_name: input.reporterName,
-  reporter_email: input.reporterEmail,
-  title: input.title,
-  description: input.description,
-  status: "OPEN",
-});
+    reporter_name: input.reporterName,
+    reporter_email: input.reporterEmail,
+    title: input.title,
+    description: input.description,
+    status: "OPEN",
+    created_by: userId,
+  });
 
-if (error) {
-  throw new Error(`Failed to create issue: ${error.message}`);
-}
+  if (error) {
+    throw new Error(`Failed to create issue: ${error.message}`);
+  }
 }
 
 export async function updateIssueStatus(id: string, status: IssueStatus): Promise<void> {
-  const supabase = createSupabaseServerClient();
+  const supabase = await createClient();
   const { error } = await supabase
     .from("issues")
     .update({ status, updated_at: new Date().toISOString() })
@@ -74,3 +76,4 @@ export async function updateIssueStatus(id: string, status: IssueStatus): Promis
 
   if (error) throw new Error(`Failed to update issue: ${error.message}`);
 }
+

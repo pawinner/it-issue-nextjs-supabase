@@ -1,7 +1,9 @@
 import { IssueList } from "@/components/IssueList";
 import { getIssues } from "@/lib/issues";
+import { requireUser } from "@/lib/auth";
 
 export default async function IssuesPage() {
+  await requireUser();
   const issues = await getIssues();
     return (
         <main className="mx-auto grid grid-cols-1 max-w-5xl gap-6 px-6 py-8">
